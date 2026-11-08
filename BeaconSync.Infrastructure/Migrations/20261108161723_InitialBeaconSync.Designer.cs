@@ -12,8 +12,8 @@ using Oracle.EntityFrameworkCore.Metadata;
 namespace BeaconSync.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20261107175615_VersaoInicial")]
-    partial class VersaoInicial
+    [Migration("20261108161723_InitialBeaconSync")]
+    partial class InitialBeaconSync
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -74,7 +74,7 @@ namespace BeaconSync.Infrastructure.Migrations
 
                     b.HasIndex("PessoaVulneravelId");
 
-                    b.ToTable("Enderecos");
+                    b.ToTable("ENDERECOS", (string)null);
                 });
 
             modelBuilder.Entity("BeaconSync.Domain.Models.PessoaVulneravel", b =>
@@ -103,7 +103,7 @@ namespace BeaconSync.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("PessoasVulneraveis");
+                    b.ToTable("PESSOAS_VULNERAVEIS", (string)null);
                 });
 
             modelBuilder.Entity("BeaconSync.Domain.Models.Responsavel", b =>
@@ -159,7 +159,7 @@ namespace BeaconSync.Infrastructure.Migrations
 
                     b.HasIndex("PessoaVulneravelId");
 
-                    b.ToTable("Responsaveis");
+                    b.ToTable("RESPONSAVEIS", (string)null);
                 });
 
             modelBuilder.Entity("BeaconSync.Domain.Models.RespostaAlerta", b =>
@@ -193,7 +193,7 @@ namespace BeaconSync.Infrastructure.Migrations
 
                     b.HasIndex("PessoaVulneravelId");
 
-                    b.ToTable("RespostasAlertas");
+                    b.ToTable("RESPOSTAS_ALERTAS", (string)null);
                 });
 
             modelBuilder.Entity("BeaconSync.Domain.Models.Voluntario", b =>
@@ -229,7 +229,7 @@ namespace BeaconSync.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Voluntarios");
+                    b.ToTable("VOLUNTARIOS", (string)null);
                 });
 
             modelBuilder.Entity("BeaconSync.Domain.Models.Endereco", b =>

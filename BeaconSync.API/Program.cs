@@ -1,10 +1,13 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using BeaconSync.Application.Extensions;
 using BeaconSync.Infrastructure.Extensions;
+using BeaconSync.API.Middlewares;
 using System.Text;
+using System.Threading.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +17,35 @@ var jwtKey = builder.Configuration["JwtSettings:Key"] ?? "ChaveSuperSecretaParaO
 // Adiciona as camadas de Application e Infrastructure
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
+
+// Adiciona o Memory Cache necessário para a Idempotência
+builder.Services.AddMemoryCache();
+
+// Configuração do Rate Limiting (Requisito 04)
+builder.Services.AddRateLimiter(options =>
+{
+    options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(context =>
+        RateLimitPartition.GetFixedWindowLimiter(
+            // Identifica por utilizador logado ou pelo IP remoto
+            partitionKey: context.User.Identity?.Name ?? context.Connection.RemoteIpAddress?.ToString() ?? "anonymous",
+            factory: _ => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = 10, // Máximo de 10 requisições para teste de 429
+                Window = TimeSpan.FromMinutes(1), // Por cada 1 minuto
+                QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+                QueueLimit = 2
+            }));
+
+    // Retorna HTTP 429 Too Many Requests personalizado
+    options.OnRejected = async (context, cancellationToken) =>
+    {
+        context.HttpContext.Response.StatusCode = StatusCodes.Status429TooManyRequests;
+        context.HttpContext.Response.ContentType = "application/json";
+        await context.HttpContext.Response.WriteAsync(
+            "{\"success\": false, \"statusCode\": 429, \"message\": \"Muitas requisições efetuadas. Por favor, tente novamente mais tarde.\"}",
+            cancellationToken);
+    };
+});
 
 // Health Checks
 builder.Services.AddHealthChecks()
@@ -92,8 +124,13 @@ app.MapHealthChecks("/health/live", new HealthCheckOptions
 
 app.UseHttpsRedirection();
 
+// Ordem correta dos Middlewares
 app.UseAuthentication();
 app.UseAuthorization();
+
+// Rate Limiter e Idempotência após autenticação
+app.UseRateLimiter();
+app.UseMiddleware<IdempotencyMiddleware>();
 
 app.MapControllers();
 

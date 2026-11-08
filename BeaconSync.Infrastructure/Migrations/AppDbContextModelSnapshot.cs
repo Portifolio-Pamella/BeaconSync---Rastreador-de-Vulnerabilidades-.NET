@@ -71,7 +71,7 @@ namespace BeaconSync.Infrastructure.Migrations
 
                     b.HasIndex("PessoaVulneravelId");
 
-                    b.ToTable("Enderecos", (string)null);
+                    b.ToTable("ENDERECOS", (string)null);
                 });
 
             modelBuilder.Entity("BeaconSync.Domain.Models.PessoaVulneravel", b =>
@@ -100,7 +100,7 @@ namespace BeaconSync.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("PessoasVulneraveis", (string)null);
+                    b.ToTable("PESSOAS_VULNERAVEIS", (string)null);
                 });
 
             modelBuilder.Entity("BeaconSync.Domain.Models.Responsavel", b =>
@@ -156,7 +156,7 @@ namespace BeaconSync.Infrastructure.Migrations
 
                     b.HasIndex("PessoaVulneravelId");
 
-                    b.ToTable("Responsaveis", (string)null);
+                    b.ToTable("RESPONSAVEIS", (string)null);
                 });
 
             modelBuilder.Entity("BeaconSync.Domain.Models.RespostaAlerta", b =>
@@ -190,7 +190,7 @@ namespace BeaconSync.Infrastructure.Migrations
 
                     b.HasIndex("PessoaVulneravelId");
 
-                    b.ToTable("RespostasAlertas", (string)null);
+                    b.ToTable("RESPOSTAS_ALERTAS", (string)null);
                 });
 
             modelBuilder.Entity("BeaconSync.Domain.Models.Voluntario", b =>
@@ -226,7 +226,7 @@ namespace BeaconSync.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Voluntarios", (string)null);
+                    b.ToTable("VOLUNTARIOS", (string)null);
                 });
 
             modelBuilder.Entity("BeaconSync.Domain.Models.Endereco", b =>
