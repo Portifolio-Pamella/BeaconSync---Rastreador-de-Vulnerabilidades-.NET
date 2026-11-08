@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("BeaconSync.Application")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+7c62249982599108551d5625d7670e1775912c05")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+512c4301b2b12178f8db8d2bbcea3c6da433a427")]
 [assembly: System.Reflection.AssemblyProductAttribute("BeaconSync.Application")]
 [assembly: System.Reflection.AssemblyTitleAttribute("BeaconSync.Application")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
