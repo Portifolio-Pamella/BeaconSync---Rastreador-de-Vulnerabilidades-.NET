@@ -1,89 +1,102 @@
-using System.Text;
-using System.Threading.RateLimiting;
-using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.AspNetCore.Http;
+using Microsoft.OpenApi.Models;
+using BeaconSync.Application.Extensions;
 using BeaconSync.Infrastructure.Extensions;
-using BeaconSync.Application.Extensions; // <-- Namespace dos Services da Application
-using BeaconSync.Application.Services.Interfaces;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Registra as dependências da Infraestrutura (Banco Oracle) e da Aplicação (Services)
-builder.Services.AddInfrastructure(builder.Configuration);
-builder.Services.AddApplication(); // <-- Adicionado para carregar os Services
-
-// 1. Swagger / OpenAPI
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
-// 2. HealthChecks
-builder.Services.AddHealthChecks()
-    .AddCheck("self", () => Microsoft.Extensions.Diagnostics.HealthChecks.HealthCheckResult.Healthy());
-
-// 3. JWT Authentication
+// Leitura das chaves do JWT a partir do appsettings.json
 var jwtKey = builder.Configuration["JwtSettings:Key"] ?? "ChaveSuperSecretaParaOProjetoBeaconSync2026";
+
+// Adiciona as camadas de Application e Infrastructure
+builder.Services.AddApplication();
+builder.Services.AddInfrastructure(builder.Configuration);
+
+// Health Checks
+builder.Services.AddHealthChecks()
+    .AddCheck("self", () => Microsoft.Extensions.Diagnostics.HealthChecks.HealthCheckResult.Healthy(), tags: new[] { "live" });
+
+builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+
+// Configuração do Swagger com Suporte a JWT Bearer
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new OpenApiInfo { Title = "BeaconSync API", Version = "v1" });
+
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "Insira o token JWT desta forma: Bearer {seu token}"
+    });
+
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[] {}
+        }
+    });
+});
+
+// Configuração da Autenticação JWT
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
         options.TokenValidationParameters = new TokenValidationParameters
         {
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey)),
+
+            ValidateIssuer = true,
             ValidIssuer = "BeaconSync",
+
+            ValidateAudience = true,
             ValidAudience = "BeaconSyncApp",
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
+
+            ValidateLifetime = true,
+            ClockSkew = TimeSpan.Zero,
         };
     });
+
 builder.Services.AddAuthorization();
-
-// 4. Rate Limiting (Proteção contra uso excessivo)
-builder.Services.AddRateLimiter(options =>
-{
-    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
-    options.AddFixedWindowLimiter("GlobalPolicy", limiterOptions =>
-    {
-        limiterOptions.PermitLimit = 100; // 100 requisições
-        limiterOptions.Window = TimeSpan.FromMinutes(1); // por minuto
-        limiterOptions.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
-        limiterOptions.QueueLimit = 2;
-    });
-});
-
-// Cache para a Idempotência
-builder.Services.AddDistributedMemoryCache();
 
 var app = builder.Build();
 
-// Configuração do Pipeline HTTP
-if (app.Environment.IsDevelopment())
+app.UseSwagger();
+app.UseSwaggerUI(c =>
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "BeaconSync API v1");
+    c.RoutePrefix = string.Empty; // Abre o Swagger diretamente na raiz (http://localhost:5006/)
+});
+
+// Mapeamento dos Health Checks
+app.MapHealthChecks("/health/live", new HealthCheckOptions
+{
+    Predicate = check => check.Tags.Contains("live")
+});
 
 app.UseHttpsRedirection();
+
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseRateLimiter();
 
-app.MapHealthChecks("/health");
-
-// Endpoint Minimal API Integrado com o Service de Pessoas Vulneráveis
-app.MapGet("/api/vulneraveis", async (IPessoaVulneravelService service) =>
-{
-    var pessoas = await service.GetAllAsync();
-    return Results.Ok(pessoas);
-})
-.RequireAuthorization()
-.RequireRateLimiting("GlobalPolicy")
-.WithTags("Pessoas Vulneráveis")
-.WithOpenApi();
+app.MapControllers();
 
 app.Run();
 
-// Necessário para os Testes de Integração reconhecerem a API
 public partial class Program { }
