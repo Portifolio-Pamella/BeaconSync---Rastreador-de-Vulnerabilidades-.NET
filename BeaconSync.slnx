@@ -1,0 +1,8 @@
+<Solution>
+  <Project Path="BeaconSync.API/BeaconSync.API.csproj" />
+  <Project Path="BeaconSync.Application/BeaconSync.Application.csproj" />
+  <Project Path="BeaconSync.Domain/BeaconSync.Domain.csproj" />
+  <Project Path="BeaconSync.Infrastructure/BeaconSync.Infrastructure.csproj" />
+  <Project Path="BeaconSync.Tests.Integration/BeaconSync.Tests.Integration.csproj" />
+  <Project Path="BeaconSync.Tests.Unit/BeaconSync.Tests.Unit.csproj" />
+</Solution>

@@ -1,0 +1,12 @@
+C:\Users\pamel\Desktop\BeaconSync---Rastreador-de-Vulnerabilidades-.NET\BeaconSync.Domain\bin\Debug\net10.0\BeaconSync.Domain.deps.json
+C:\Users\pamel\Desktop\BeaconSync---Rastreador-de-Vulnerabilidades-.NET\BeaconSync.Domain\bin\Debug\net10.0\BeaconSync.Domain.dll
+C:\Users\pamel\Desktop\BeaconSync---Rastreador-de-Vulnerabilidades-.NET\BeaconSync.Domain\bin\Debug\net10.0\BeaconSync.Domain.pdb
+C:\Users\pamel\Desktop\BeaconSync---Rastreador-de-Vulnerabilidades-.NET\BeaconSync.Domain\obj\Debug\net10.0\BeaconSync.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\pamel\Desktop\BeaconSync---Rastreador-de-Vulnerabilidades-.NET\BeaconSync.Domain\obj\Debug\net10.0\BeaconSync.Domain.AssemblyInfoInputs.cache
+C:\Users\pamel\Desktop\BeaconSync---Rastreador-de-Vulnerabilidades-.NET\BeaconSync.Domain\obj\Debug\net10.0\BeaconSync.Domain.AssemblyInfo.cs
+C:\Users\pamel\Desktop\BeaconSync---Rastreador-de-Vulnerabilidades-.NET\BeaconSync.Domain\obj\Debug\net10.0\BeaconSync.Domain.csproj.CoreCompileInputs.cache
+C:\Users\pamel\Desktop\BeaconSync---Rastreador-de-Vulnerabilidades-.NET\BeaconSync.Domain\obj\Debug\net10.0\BeaconSync.Domain.sourcelink.json
+C:\Users\pamel\Desktop\BeaconSync---Rastreador-de-Vulnerabilidades-.NET\BeaconSync.Domain\obj\Debug\net10.0\BeaconSync.Domain.dll
+C:\Users\pamel\Desktop\BeaconSync---Rastreador-de-Vulnerabilidades-.NET\BeaconSync.Domain\obj\Debug\net10.0\refint\BeaconSync.Domain.dll
+C:\Users\pamel\Desktop\BeaconSync---Rastreador-de-Vulnerabilidades-.NET\BeaconSync.Domain\obj\Debug\net10.0\BeaconSync.Domain.pdb
+C:\Users\pamel\Desktop\BeaconSync---Rastreador-de-Vulnerabilidades-.NET\BeaconSync.Domain\obj\Debug\net10.0\ref\BeaconSync.Domain.dll
