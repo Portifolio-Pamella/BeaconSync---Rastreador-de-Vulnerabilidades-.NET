@@ -1,3 +1,8 @@
+Aqui está o **`README.md`** completo, organizado de forma impecável, com a formatação Markdown ajustada e trazendo o detalhamento essencial sobre **o que é o BeaconSync, o que ele faz e a gestão/cadastro de pessoas vulneráveis, endereços, voluntários e alertas**.
+
+Basta copiar todo o texto abaixo e colar diretamente no seu arquivo **`README.md`** na raiz do projeto:
+
+```markdown
 # 🌐 BeaconSync — Rastreador de Vulnerabilidades & Gestão de Apoio Social
 
 > **Global Solution 2026/2 · CitizenTech · FIAP**  
@@ -13,11 +18,21 @@
 
 ---
 
-## 💡 Resumo da Solução
+## 💡 O que é o BeaconSync e o que ele faz?
 
-O **BeaconSync** é uma plataforma corporativa desenvolvida em **API RESTful com .NET 10 (ASP.NET Core)** sob os rigorosos princípios de **Clean Architecture**. O principal objetivo do sistema é centralizar, gerenciar e otimizar o ecossistema de apoio social e rastreamento de vulnerabilidades. 
+O **BeaconSync** é uma plataforma corporativa desenvolvida em **API RESTful com .NET 10 (ASP.NET Core)** sob os rigorosos princípios de **Clean Architecture**. O principal objetivo do sistema é centralizar, gerenciar e otimizar o ecossistema de apoio social e rastreamento de vulnerabilidades.
 
-A solução resolve desafios críticos de engenharia de software corporativa através de:
+### 🎯 Principais Funcionalidades e Domínio de Negócio:
+* **Cadastro e Gestão de Pessoas Vulneráveis:** Permite registrar e monitorar cidadãos em situação de vulnerabilidade social, mapeando suas necessidades específicas e perfis de risco.
+* **Mapeamento de Endereços:** Associa localizações geográficas precisas aos cadastros para otimizar o direcionamento de equipes e recursos de ajuda humanitária.
+* **Gestão de Voluntários e Responsáveis:** Cadastra e gerencia os dados de voluntários e responsáveis técnicos/sociais atuantes nas frentes de apoio.
+* **Respostas a Alertas de Emergência:** Sistema dinâmico para emissão, rastreio e registro de respostas a chamados e alertas gerados na comunidade.
+
+---
+
+## 🛠️ Arquitetura e Engenharia de Software
+
+A solução resolve desafios críticos de engenharia através de:
 * **Arquitetura Modular:** Separação estrita de responsabilidades entre `Domain`, `Application`, `Infrastructure`, `API` e camadas de teste.
 * **Segurança e Resiliência:** Mecanismos robustos de autenticação baseada em **JWT**, proteção contra ataques de força bruta e uso excessivo através de **Rate Limiting** (retornando `429 Too Many Requests`), além de **Idempotência** via cache em memória para prevenir operações duplicadas em requisições de escrita (`POST`).
 * **Persistência Corporativa:** Integração nativa com **Oracle Database** utilizando mapeamentos em maiúsculas via Entity Framework Core para total compatibilidade com os padrões de banco de dados corporativos da FIAP.
@@ -59,23 +74,45 @@ Abra o arquivo **`appsettings.json`** (localizado no projeto `BeaconSync.API`) e
   }
 }
 
-Substitua SEU_USUARIO, SUA_SENHA, o host do banco de dados e a chave secreta do JWT pelos valores reais do seu ambiente Oracle e da sua política de segurança.
+```
 
-3. Aplicando as Migrações no Banco de Dados
+*Substitua `SEU_USUARIO`, `SUA_SENHA`, o host do banco de dados e a chave secreta do JWT pelos valores reais do seu ambiente Oracle e da sua política de segurança.*
+
+### 3. Aplicando as Migrações no Banco de Dados
+
 Com as credenciais configuradas, abra o terminal na raiz do projeto e execute o comando do Entity Framework para gerar as tabelas no seu Oracle:
 
-Bash
+```bash
 dotnet ef database update --project BeaconSync.Infrastructure/BeaconSync.Infrastructure.csproj --startup-project BeaconSync.API/BeaconSync.API.csproj
-4. Executando a API
+
+```
+
+### 4. Executando a API
+
 Inicie a aplicação executando:
 
-Bash
+```bash
 dotnet run --project BeaconSync.API/BeaconSync.API.csproj
-Acesse a documentação interativa do Swagger diretamente no navegador através de: http://localhost:5006/.
 
-🧪 Executando os Testes Automatizados
+```
+
+*Acesse a documentação interativa do **Swagger** diretamente no navegador através de: `http://localhost:5006/`.*
+
+---
+
+## 🧪 Executando os Testes Automatizados
+
 O projeto conta com validações automatizadas cobrindo regras de negócio e contratos de endpoints. Para rodar toda a suíte de testes unitários e de integração:
 
-Bash
+```bash
 dotnet test
+
+```
+
+---
+
 © 2026 BeaconSync · Todos os direitos reservados.
+
+```
+
+```
