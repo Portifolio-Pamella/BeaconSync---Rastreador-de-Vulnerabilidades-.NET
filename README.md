@@ -1,8 +1,4 @@
-Aqui está o **`README.md`** completo, organizado de forma impecável, com a formatação Markdown ajustada e trazendo o detalhamento essencial sobre **o que é o BeaconSync, o que ele faz e a gestão/cadastro de pessoas vulneráveis, endereços, voluntários e alertas**.
 
-Basta copiar todo o texto abaixo e colar diretamente no seu arquivo **`README.md`** na raiz do projeto:
-
-```markdown
 # 🌐 BeaconSync — Rastreador de Vulnerabilidades & Gestão de Apoio Social
 
 > **Global Solution 2026/2 · CitizenTech · FIAP**  
@@ -112,7 +108,3 @@ dotnet test
 ---
 
 © 2026 BeaconSync · Todos os direitos reservados.
-
-```
-
-```
