@@ -19,6 +19,7 @@
 O **BeaconSync** é uma plataforma corporativa desenvolvida em **API RESTful com .NET 10 (ASP.NET Core)** sob os rigorosos princípios de **Clean Architecture**. O principal objetivo do sistema é centralizar, gerenciar e otimizar o ecossistema de apoio social e rastreamento de vulnerabilidades.
 
 ### 🎯 Principais Funcionalidades e Domínio de Negócio:
+* **Build API** (https://beaconsync-rastreador-de.onrender.com/index.html)
 * **Cadastro e Gestão de Pessoas Vulneráveis:** Permite registrar e monitorar cidadãos em situação de vulnerabilidade social, mapeando suas necessidades específicas e perfis de risco.
 * **Mapeamento de Endereços:** Associa localizações geográficas precisas aos cadastros para otimizar o direcionamento de equipes e recursos de ajuda humanitária.
 * **Gestão de Voluntários e Responsáveis:** Cadastra e gerencia os dados de voluntários e responsáveis técnicos/sociais atuantes nas frentes de apoio.
