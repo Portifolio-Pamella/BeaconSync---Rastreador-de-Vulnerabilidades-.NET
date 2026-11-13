@@ -108,4 +108,55 @@ dotnet test
 
 ---
 
+## 1. Cadastrar uma Nova Pessoa Vulnerável (Primeiro passo)
+Rota: POST /api/v1/pessoas-vulneraveis (ou equivalente no seu Swagger)
+
+JSON
+{
+  "nome": "Ana Beatriz Silva",
+  "idade": 45,
+  "tipoVulnerabilidade": "Mãe solo com lactente em área de encosta",
+  "necessidadeEspecial": "Nenhuma",
+  "enderecoId": 0
+}
+(Após executar este, anote o id que a API retornar, por exemplo, ID 2).
+
+## 2. Cadastrar um Novo Voluntário (Independente)
+Rota: POST /api/v1/voluntarios
+
+JSON
+{
+  "nome": "Lucas Gabriel",
+  "email": "lucas.gabriel@beaconsync.com",
+  "telefone": "11988889999",
+  "especialidade": "Logística e Distribuição de Alimentos",
+  "disponivelParaAjuda": true
+}
+## 3. Cadastrar o Endereço (Vinculado à pessoa criada)
+Rota: POST /api/v1/enderecos(Substitua o pessoaVulneravelId pelo ID real que você obteve no passo 1, por exemplo, 2)
+
+JSON
+{
+  "id": 0,
+  "pessoaVulneravelId": 2,
+  "logradouro": "Rua das Comunidades",
+  "numero": "120",
+  "bairro": "Heliópolis",
+  "distrito": "Sacomã",
+  "tipoImovel": "Casa",
+  "temLajeParaHelicoptero": false,
+  "andar": 0,
+  "eEnderecoAtual": true
+}
+## 4. Cadastrar uma Resposta a Alerta (Vinculando Voluntário e Pessoa)
+Rota: POST /api/v1/respostas-alerta(Certifique-se de usar IDs de voluntários e pessoas que você sabe que já existem no banco)
+
+JSON
+{
+  "descricao": "Visita de monitoramento e entrega de kits de higiene realizada com sucesso.",
+  "status": "Concluído",
+  "voluntarioId": 1,
+  "pessoaVulneravelId": 2
+}
+
 © 2026 BeaconSync · Todos os direitos reservados.
