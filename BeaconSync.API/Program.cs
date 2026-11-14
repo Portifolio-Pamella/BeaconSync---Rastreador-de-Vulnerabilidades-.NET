@@ -11,32 +11,31 @@ using System.Threading.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Leitura das chaves do JWT a partir do appsettings.json
-var jwtKey = builder.Configuration["JwtSettings:Key"] ?? "ChaveSuperSecretaParaOProjetoBeaconSync2026";
+// Leitura das chaves do JWT alinhadas com o Java
+var jwtKey = builder.Configuration["JwtSettings:Key"] ?? "ChaveSuperSecretaParaOProjetoBeaconSync2026ComMaisDeTrintaEDoisBytes";
+var jwtIssuer = builder.Configuration["JwtSettings:Issuer"] ?? "beaconsync-api";
+var jwtAudience = builder.Configuration["JwtSettings:Audience"];
 
 // Adiciona as camadas de Application e Infrastructure
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
 
-// Adiciona o Memory Cache necessário para a Idempotência
 builder.Services.AddMemoryCache();
 
-// Configuração do Rate Limiting (Requisito 04)
+// Configuração do Rate Limiting
 builder.Services.AddRateLimiter(options =>
 {
     options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(context =>
         RateLimitPartition.GetFixedWindowLimiter(
-            // Identifica por utilizador logado ou pelo IP remoto
             partitionKey: context.User.Identity?.Name ?? context.Connection.RemoteIpAddress?.ToString() ?? "anonymous",
             factory: _ => new FixedWindowRateLimiterOptions
             {
-                PermitLimit = 10, // Máximo de 10 requisições para teste de 429
-                Window = TimeSpan.FromMinutes(1), // Por cada 1 minuto
+                PermitLimit = 10,
+                Window = TimeSpan.FromMinutes(1),
                 QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
                 QueueLimit = 2
             }));
 
-    // Retorna HTTP 429 Too Many Requests personalizado
     options.OnRejected = async (context, cancellationToken) =>
     {
         context.HttpContext.Response.StatusCode = StatusCodes.Status429TooManyRequests;
@@ -66,7 +65,7 @@ builder.Services.AddSwaggerGen(options =>
         Scheme = "bearer",
         BearerFormat = "JWT",
         In = ParameterLocation.Header,
-        Description = "Insira o token JWT desta forma: Bearer {seu token}"
+        Description = "Insira o token JWT gerado pelo login Java desta forma: Bearer {seu token}"
     });
 
     options.AddSecurityRequirement(new OpenApiSecurityRequirement
@@ -85,7 +84,7 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
-// Configuração da Autenticação JWT
+// Configuração da Autenticação JWT compatível com o Java
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -95,10 +94,10 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey)),
 
             ValidateIssuer = true,
-            ValidIssuer = "BeaconSync",
+            ValidIssuer = jwtIssuer,
 
-            ValidateAudience = true,
-            ValidAudience = "BeaconSyncApp",
+            ValidateAudience = !string.IsNullOrEmpty(jwtAudience),
+            ValidAudience = jwtAudience,
 
             ValidateLifetime = true,
             ClockSkew = TimeSpan.Zero,
@@ -113,10 +112,9 @@ app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "BeaconSync API v1");
-    c.RoutePrefix = string.Empty; // Abre o Swagger diretamente na raiz (http://localhost:5006/)
+    c.RoutePrefix = string.Empty;
 });
 
-// Mapeamento dos Health Checks
 app.MapHealthChecks("/health/live", new HealthCheckOptions
 {
     Predicate = check => check.Tags.Contains("live")
@@ -124,11 +122,9 @@ app.MapHealthChecks("/health/live", new HealthCheckOptions
 
 app.UseHttpsRedirection();
 
-// Ordem correta dos Middlewares
 app.UseAuthentication();
 app.UseAuthorization();
 
-// Rate Limiter e Idempotência após autenticação
 app.UseRateLimiter();
 app.UseMiddleware<IdempotencyMiddleware>();
 

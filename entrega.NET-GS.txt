@@ -1,0 +1,12 @@
+
+Entrega GS - Solução BeaconSync
+
+Turma: 2TDSPX
+
+Felipe Ribeiro Salles de Camargo | RM565224
+João Pedro Pereira Camilo | RM562005
+Lucas Matsubara Reis | RM565020
+Pamella Christiny Chaves Brito | RM565206
+
+Link Github: https://github.com/Portifolio-Pamella/BeaconSync---Rastreador-de-Vulnerabilidades-.NET
+API Render: https://beaconsync-rastreador-de.onrender.com/index.html
