@@ -19,13 +19,14 @@ public class IdempotencyMiddleware
 
     public async Task InvokeAsync(HttpContext context)
     {
-        // Apenas aplicamos idempotência em métodos POST (operações de escrita críticas)
-        if (HttpMethods.IsPost(context.Request.Method) && context.Request.Headers.ContainsKey("X-Idempotency-Key"))
+        // Apenas aplicamos idempotência em métodos POST (operações de escrita críticas) e se contiver a chave
+        if (HttpMethods.IsPost(context.Request.Method) && context.Request.Headers.TryGetValue("X-Idempotency-Key", out var idempotencyKey))
         {
-            var idempotencyKey = context.Request.Headers["X-Idempotency-Key"].ToString();
-            var cacheKey = $"Idempotency-{idempotencyKey}";
+            // Isola a chave de cache considerando o usuário autenticado e a rota para evitar conflitos entre usuários diferentes
+            var userId = context.User.Identity?.Name ?? "anonymous";
+            var path = context.Request.Path;
+            var cacheKey = $"Idempotency_{userId}_{path}_{idempotencyKey}";
 
-            // Se já processámos esta chave, retornamos a resposta guardada em cache
             if (_cache.TryGetValue(cacheKey, out CachedResponse? cachedResponse))
             {
                 context.Response.StatusCode = cachedResponse!.StatusCode;
@@ -34,7 +35,6 @@ public class IdempotencyMiddleware
                 return;
             }
 
-            // Intercepta a resposta original para salvá-la no cache
             var originalBodyStream = context.Response.Body;
             using var memoryStream = new MemoryStream();
             context.Response.Body = memoryStream;
@@ -45,7 +45,6 @@ public class IdempotencyMiddleware
             var responseBody = await new StreamReader(memoryStream).ReadToEndAsync();
             memoryStream.Position = 0;
 
-            // Se a operação foi bem-sucedida (2xx), guardamos no cache por 10 minutos
             if (context.Response.StatusCode >= 200 && context.Response.StatusCode < 300)
             {
                 var responseToCache = new CachedResponse

@@ -1,8 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 
 namespace BeaconSync.API.Controllers;
 
@@ -10,56 +6,16 @@ namespace BeaconSync.API.Controllers;
 [Route("api/v1/auth")]
 public class AuthController : ControllerBase
 {
-    private readonly IConfiguration _configuration;
-
-    public AuthController(IConfiguration configuration)
-    {
-        _configuration = configuration;
-    }
-
-    /// <summary>
-    /// Realiza o login para gerar o Token JWT de acesso aos endpoints protegidos.
-    /// </summary>
     [HttpPost("login")]
-    public IActionResult Login([FromBody] LoginModel model)
+    public IActionResult Login()
     {
-        // Credenciais de teste simples para validação do projeto
-        if (model.Email == "admin@beaconsync.com" && model.Senha == "123456")
+        // Conforme o contrato de integração, o login local do .NET foi descontinuado.
+        // O ecossistema agora utiliza exclusivamente o sistema de autenticação centralizado em Java.
+        return StatusCode(StatusCodes.Status410Gone, new
         {
-            var jwtKey = _configuration["JwtSettings:Key"] ?? "ChaveSuperSecretaParaOProjetoBeaconSync2026";
-            var key = Encoding.UTF8.GetBytes(jwtKey);
-
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(new[]
-                {
-                    new Claim(ClaimTypes.Name, model.Email),
-                    new Claim(ClaimTypes.Role, "Admin")
-                }),
-                Expires = DateTime.UtcNow.AddHours(2),
-                Issuer = "BeaconSync",
-                Audience = "BeaconSyncApp",
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-            };
-
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            var tokenString = tokenHandler.WriteToken(token);
-
-            return Ok(new
-            {
-                success = true,
-                token = tokenString,
-                message = "Token gerado com sucesso! Copie este token e cole no botão 'Authorize' do Swagger."
-            });
-        }
-
-        return Unauthorized(new { success = false, message = "E-mail ou senha inválidos. Use admin@beaconsync.com / 123456" });
+            success = false,
+            statusCode = 410,
+            message = "O login nativo do .NET foi descontinuado. Por favor, utilize o endpoint de autenticação da API Java para gerar o token JWT."
+        });
     }
-}
-
-public class LoginModel
-{
-    public string Email { get; set; } = string.Empty;
-    public string Senha { get; set; } = string.Empty;
 }
