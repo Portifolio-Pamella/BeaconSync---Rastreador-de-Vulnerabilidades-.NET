@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BeaconSync.API.Controllers;
 
-[Authorize] // <--- Mantenha apenas [Authorize] para o app mobile conseguir acessar normalmente com o token do Java!
+[Authorize]
 [ApiController]
 [Route("api/v1/voluntarios")]
 public class VoluntariosController : ControllerBase
@@ -34,14 +34,10 @@ public class VoluntariosController : ControllerBase
     [HttpPut("{id:int}")]
     public async Task<IActionResult> Update(int id, [FromBody] VoluntarioDto dto)
     {
-        await _service.UpdateAsync(id, dto);
-        return NoContent();
+        try { await _service.UpdateAsync(id, dto); return NoContent(); }
+        catch { return NotFound(); }
     }
 
     [HttpDelete("{id:int}")]
-    public async Task<IActionResult> Delete(int id)
-    {
-        await _service.DeleteAsync(id);
-        return NoContent();
-    }
+    public async Task<IActionResult> Delete(int id) { await _service.DeleteAsync(id); return NoContent(); }
 }
